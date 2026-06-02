@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from typing import Tuple, Optional
-from scipy.ndimage import gaussian_filter
 
 class SketchPreprocessor:
     """
