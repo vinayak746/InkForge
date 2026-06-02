@@ -25,7 +25,8 @@ google-generativeai
 requests
 
 # ── Handwriting recognition ───────────────────────────────────────────────────
-easyocr
+# NOTE: easyocr is disabled in production config to prevent OOM. Move to local setup if running locally.
+# easyocr
 
 # ── Math solver ──────────────────────────────────────────────────────────────
 sympy
