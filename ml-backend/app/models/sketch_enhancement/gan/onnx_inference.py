@@ -143,7 +143,26 @@ class ONNXSketchEnhancer:
             logger.info(f"Using cached Informative Drawings model: {self.hf_model_path}")
             return
 
-        self.model_dir.mkdir(parents=True, exist_ok=True)
+        # If it doesn't exist, we must download it.
+        # But if the current model_dir is not writable (e.g. read-only filesystem),
+        # redirect it to /tmp/checkpoints
+        try:
+            self.model_dir.mkdir(parents=True, exist_ok=True)
+            # Try to write a dummy file to check writability
+            dummy_file = self.model_dir / ".write_test"
+            dummy_file.touch()
+            dummy_file.unlink()
+        except Exception:
+            # Not writable, fallback to /tmp/checkpoints
+            logger.info(f"Model directory {self.model_dir} is not writable. Redirecting download to /tmp/checkpoints")
+            self.model_dir = Path("/tmp/checkpoints")
+            self.hf_model_path = self.model_dir / f"informative_drawings_{self.model_variant}.onnx"
+            self.model_dir.mkdir(parents=True, exist_ok=True)
+
+        if self.hf_model_path.exists():
+            logger.info(f"Using downloaded Informative Drawings model: {self.hf_model_path}")
+            return
+
         logger.info(f"Downloading Informative Drawings model from {self.model_url} ...")
         logger.info(f"  Saving to: {self.hf_model_path}")
 

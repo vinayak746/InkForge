@@ -28,8 +28,19 @@ class Config:
     
     # Paths
     BASE_DIR = Path(__file__).parent.parent
-    TEMP_DIR = BASE_DIR / "temp"
-    TEMP_DIR.mkdir(exist_ok=True)
+    
+    # In Vercel / serverless environment, use the writable /tmp directory
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        TEMP_DIR = Path("/tmp") / "temp"
+    else:
+        TEMP_DIR = BASE_DIR / "temp"
+        
+    try:
+        TEMP_DIR.mkdir(exist_ok=True, parents=True)
+    except Exception as e:
+        print(f"Warning: Could not create temp directory {TEMP_DIR}: {e}. Falling back to system tmp.")
+        import tempfile
+        TEMP_DIR = Path(tempfile.gettempdir())
     
     # ===== SKETCH ENHANCEMENT SETTINGS =====
     
