@@ -29,48 +29,60 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB max
 });
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "/auth/google/callback",
-      proxy: true,
-    },
-    async (_accessToken, _refreshToken, profile, done) => {
-      try {
-        const email = profile.emails?.[0].value;
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const isGoogleAuthConfigured = 
+  googleClientId && 
+  googleClientSecret && 
+  !googleClientId.startsWith("<your") && 
+  !googleClientSecret.startsWith("<your");
 
-        if (!email) {
-          return done(new Error("No email returned from Google"), undefined);
+if (isGoogleAuthConfigured) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: googleClientId!,
+        clientSecret: googleClientSecret!,
+        callbackURL: "/auth/google/callback",
+        proxy: true,
+      },
+      async (_accessToken, _refreshToken, profile, done) => {
+        try {
+          const email = profile.emails?.[0].value;
+
+          if (!email) {
+            return done(new Error("No email returned from Google"), undefined);
+          }
+
+          let user = await User.findOne({ email });
+
+          // 🔁 Account linking
+          if (!user) {
+            user = await User.create({
+              email,
+              name: profile.displayName,
+              password: "GOOGLE_OAUTH", // placeholder
+              googleId: profile.id,
+              authProvider: "google", 
+            });
+
+
+          } else if (!user.googleId) {
+            user.googleId = profile.id;
+            user.authProvider = "google";
+            await user.save();
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err as Error, undefined);
         }
-
-        let user = await User.findOne({ email });
-
-        // 🔁 Account linking
-        if (!user) {
-          user = await User.create({
-            email,
-            name: profile.displayName,
-            password: "GOOGLE_OAUTH", // placeholder
-            googleId: profile.id,
-            authProvider: "google", 
-          });
-
-
-        } else if (!user.googleId) {
-          user.googleId = profile.id;
-          user.authProvider = "google";
-          await user.save();
-        }
-
-        return done(null, user);
-      } catch (err) {
-        return done(err as Error, undefined);
       }
-    }
-  )
-);
+    )
+  );
+} else {
+  console.log("⚠️ [WARN] Google OAuth is not configured or uses placeholders. Google Sign-In will be disabled.");
+}
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const MONGO_URI = process.env.MONGO_URI!;
@@ -82,11 +94,18 @@ export function createExpressApp() {
   app.use(express.json());
   app.use(passport.initialize());
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['https://sketchcalibur.vercel.app', 'http://localhost:3000'];
+
   app.use(cors({
-    origin: [
-      'https://sketchcalibur.vercel.app',
-      'http://localhost:3000'
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
   }));
 
@@ -404,6 +423,12 @@ app.get('/rooms/:roomId/messages', middleware, async (req: any, res) => {
 // ---------------------- GOOGLE AUTH ----------------------
 app.get(
   "/auth/google",
+  (req, res, next) => {
+    if (!isGoogleAuthConfigured) {
+      return res.status(400).json({ message: "Google Auth is not configured on this server." });
+    }
+    next();
+  },
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
@@ -413,9 +438,15 @@ app.get(
 
 app.get(
   "/auth/google/callback",
+  (req, res, next) => {
+    if (!isGoogleAuthConfigured) {
+      return res.status(400).json({ message: "Google Auth is not configured on this server." });
+    }
+    next();
+  },
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "https://sketchcalibur.vercel.app/auth", // Redirect on fail
+    failureRedirect: `${process.env.FRONTEND_URL || "https://sketchcalibur.vercel.app"}/auth`, // Redirect on fail
   }),
   (req, res) => {
     const user = req.user as any;
@@ -428,7 +459,7 @@ app.get(
 
     // 🚀 REDIRECT back to frontend with the token in the URL
     // Use your production URL here
-    const frontendUrl = "https://sketchcalibur.vercel.app/dashboard"; 
+    const frontendUrl = `${process.env.FRONTEND_URL || "https://sketchcalibur.vercel.app"}/dashboard`; 
     return res.redirect(`${frontendUrl}?token=${token}`);
   }
 );

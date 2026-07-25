@@ -12,11 +12,15 @@ from app.models.math_solving import MathSolver
 from app.models.text_conversion import HandwritingRecognizer, TextStyler
 from app.config import config
 
+import os
+
 app = FastAPI(title="SketchCalibur ML API", version="2.0.0")
+
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "https://sketchcalibur.vercel.app,http://localhost:3000").split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://sketchcalibur.vercel.app", "http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
