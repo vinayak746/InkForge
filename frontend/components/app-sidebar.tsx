@@ -133,7 +133,7 @@ const Logo = () => (
       animate={{ opacity: 1 }}
       className="font-medium whitespace-pre text-2xl"
     >
-      SketchCalibur
+      InkForge
     </motion.span>
   </a>
 );

@@ -1,21 +1,14 @@
 "use client";
 import { cn } from "@/lib/utils";
 // this is a client component
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { renderCanvas } from "@/components/ui/canvas"
 import { DIcons } from "dicons";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
   const router = useRouter();
-
-  useEffect(() => {
-    renderCanvas();
-  }, []);
-
   const handleGetStarted = () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -40,7 +33,7 @@ export function Hero() {
           <div className="relative flex items-center whitespace-nowrap rounded-full border bg-popover px-3 py-1 text-xs leading-6  text-primary/60 ">
             <DIcons.Shapes className="h-5 p-1 text-orange-500" />Now live on ProductHunt.com
             <a
-              href="https://www.producthunt.com/products/sketchcalibur"
+              href="https://www.producthunt.com/products/inkforge"
               rel="noreferrer"
               className="hover:text-ali ml-1 flex items-center font-semibold"
             >
@@ -73,7 +66,7 @@ export function Hero() {
                   strokeWidth={4}
                   className="text-ali absolute -bottom-5 -right-5 h-10 w-10"
                 />
-                Build faster with Sketchcalibur
+                Build faster with InkForge
               </h1>
               
                 
@@ -81,7 +74,7 @@ export function Hero() {
             <Button variant="default" size="lg" onClick={handleGetStarted}>
               Get Started
             </Button>
-            <Link href={"https://github.com/prakhar362"} target="_blank">
+            <Link href={"https://github.com/thakurRohi"} target="_blank">
               <Button variant="outline" size="lg">
                 <Icons.gitHub className="h-6 w-6 mr-2 " /> GitHub
               </Button>
@@ -92,7 +85,7 @@ export function Hero() {
           </div>
 
           <h1 className="mt-8 text-2xl md:text-2xl">
-            Sketchcalibur is a real-time collaborative whiteboard.  
+            InkForge is a real-time collaborative whiteboard.  
             <span className="text-ali font-bold"></span>
           </h1>
 
@@ -102,10 +95,6 @@ export function Hero() {
           
         </div>
       </div>
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
     </section>
   );
 };

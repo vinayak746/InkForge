@@ -267,7 +267,7 @@ export const MLToolbar: React.FC<MLToolbarProps> = ({ excalidrawAPI }) => {
     <>
       {/* ── Toolbar panel ── */}
       <div className="fixed top-4 right-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50 w-[210px]">
-        <p className="text-xs font-bold text-gray-700 mb-3">SketchCalibur AI Tools</p>
+        <p className="text-xs font-bold text-gray-700 mb-3">InkForge AI Tools</p>
 
         {/* Auto Enhance — full width */}
         <button

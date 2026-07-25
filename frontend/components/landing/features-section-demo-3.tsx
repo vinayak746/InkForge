@@ -1,11 +1,8 @@
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
-import createGlobe from "cobe";
-import { useEffect, useRef } from "react";
 import { MessageSquare } from "lucide-react"; 
 import { motion } from "motion/react";
-import { IconBrandYoutubeFilled } from "@tabler/icons-react";
 
 export default function Discover() {
   const features = [
@@ -23,16 +20,10 @@ export default function Discover() {
       className: "border-b col-span-1 lg:col-span-2 dark:border-neutral-800",
     },
     {
-      title: "Watch the Demo",
-      description: "See how Sketchcalibur handles complex diagrams and real-time syncing.",
-      skeleton: <SkeletonThree />,
-      className: "col-span-1 lg:col-span-3 lg:border-r dark:border-neutral-800",
-    },
-    {
       title: "Global Sync & Sharing",
       description: "Synced across the globe with our cutting edge cloud infrastructure and CDN.",
-      skeleton: <SkeletonFour />,
-      className: "col-span-1 lg:col-span-3 border-b lg:border-none",
+      skeleton: <SkeletonThree />,
+      className: "col-span-1 lg:col-span-6 border-b lg:border-none",
     },
   ];
 
@@ -168,32 +159,31 @@ export const SkeletonTwo = () => {
   );
 };
 
-// Consistent h-48 for the YouTube preview
+// Consistent styling for the sharing/sync preview
 export const SkeletonThree = () => {
   return (
-    <div  className="h-full w-full">
-      <a
-      href="http://www.youtube.com/watch?v=Gv9MezPAchI"
-      target="__blank"
-      className="relative block h-full w-full group/image overflow-hidden rounded-xl"
-    >
-      <IconBrandYoutubeFilled className="h-full w-12 absolute z-10 inset-0 text-red-500 m-auto transition-transform group-hover/image:scale-110" />
-      <img
-        src="https://img.youtube.com/vi/Gv9MezPAchI/maxresdefault.jpg"
-        alt="Demo Video"
-        className="h-full w-full object-cover rounded-xl group-hover/image:scale-105 transition-all duration-300"
-      />
-    </a>
-    </div>
-    
-  );
-};
-
-// Globe height adjusted to not overflow the card
-export const SkeletonFour = () => {
-  return (
-    <div className="h-10/12 flex flex-col items-center relative bg-transparent  overflow-hidden">
-      <Globe className="absolute  scale-120" />
+    <div className="h-full flex flex-col items-center justify-center relative bg-transparent overflow-hidden">
+      <div className="flex flex-col items-center justify-center gap-4 p-8">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </div>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center max-w-xs">
+          Share your board with a single link. Anyone, anywhere, any device.
+        </p>
+        <div className="flex gap-2 mt-2">
+          {["US", "EU", "APAC"].map((region) => (
+            <span key={region} className="text-xs px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">
+              {region}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -203,35 +193,3 @@ const CursorIcon = ({ color }: { color: string }) => (
     <path d="M5.6691 12.3174L2.8851 3.7928C2.51501 2.65715 3.65715 1.51501 4.7928 1.8851L13.3174 4.6691C14.4551 5.04017 14.4714 6.64336 13.3424 7.03741L8.9631 8.5641L7.43641 12.9434C7.04236 14.0724 5.43917 14.0561 5.6691 12.3174Z" fill={color} />
   </svg>
 );
-
-export const Globe = ({ className }: { className?: string }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    let phi = 0;
-    if (!canvasRef.current) return;
-    const globe = createGlobe(canvasRef.current, {
-      devicePixelRatio: 2,
-      width: 500 * 2,
-      height: 500 * 2,
-      phi: 0,
-      theta: 0,
-      dark: 1,
-      diffuse: 1.2,
-      mapSamples: 12000,
-      mapBrightness: 6,
-      baseColor: [0.3, 0.3, 0.3],
-      markerColor: [0.1, 0.8, 1],
-      glowColor: [1, 1, 1],
-      markers: [
-        { location: [37.7595, -122.4367], size: 0.03 },
-        { location: [40.7128, -74.006], size: 0.1 },
-      ],
-      onRender: (state) => {
-        state.phi = phi;
-        phi += 0.01;
-      },
-    });
-    return () => globe.destroy();
-  }, []);
-  return <canvas ref={canvasRef} style={{ width: 500, height: 500, maxWidth: "100%", aspectRatio: 1 }} className={className} />;
-};

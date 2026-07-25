@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sketchcalibur",
-  description: "Canvas Board",
+  title: "InkForge",
+  description: "Real-time collaborative whiteboard",
 };
 
 export default function RootLayout({

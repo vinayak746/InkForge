@@ -188,11 +188,11 @@ export default function FAQWithSpiral() {
   // FAQ content
 const faqs = [
   {
-    q: "What is Sketchcalibur?",
-    a: "Sketchcalibur is a real-time collaborative whiteboard where multiple people can draw, brainstorm, and visualize ideas together instantly using a shared room."
+    q: "What is InkForge?",
+    a: "InkForge is a real-time collaborative whiteboard where multiple people can draw, brainstorm, and visualize ideas together instantly using a shared room."
   },
   {
-    q: "Do I need to sign up to use Sketchcalibur?",
+    q: "Do I need to sign up to use InkForge?",
     a: "Yes. You can create a room and start drawing instantly. Just share the link with others and collaborate in real time."
   },
   {
@@ -201,15 +201,15 @@ const faqs = [
   },
   {
     q: "Can multiple people draw at the same time?",
-    a: "Yes. Sketchcalibur supports simultaneous drawing from multiple users, making it ideal for brainstorming and team discussions."
+    a: "Yes. InkForge supports simultaneous drawing from multiple users, making it ideal for brainstorming and team discussions."
   },
   {
-    q: "Is Sketchcalibur free to use?",
-    a: "Yes. Sketchcalibur is currently free to use. There are no hidden charges or subscriptions."
+    q: "Is InkForge free to use?",
+    a: "Yes. InkForge is currently free to use. There are no hidden charges or subscriptions."
   },
   {
     q: "Do I need to install anything?",
-    a: "No installations required. Sketchcalibur runs entirely in your browser on desktop and mobile devices."
+    a: "No installations required. InkForge runs entirely in your browser on desktop and mobile devices."
   },
   {
     q: "Can I share my board with others?",
@@ -220,12 +220,12 @@ const faqs = [
     a: "Rooms are isolated and accessible only via their unique links. No personal data is required to start collaborating."
   },
   {
-    q: "Is Sketchcalibur open source?",
-    a: "Yes. Sketchcalibur is open source. You can explore the code, contribute, or deploy your own version from the GitHub repository."
+    q: "Is InkForge open source?",
+    a: "Yes. InkForge is open source. You can explore the code, contribute, or deploy your own version from the GitHub repository."
   },
   {
-    q: "Who is Sketchcalibur best suited for?",
-    a: "Sketchcalibur is great for teams, students, designers, educators, and anyone who wants to think and collaborate visually in real time."
+    q: "Who is InkForge best suited for?",
+    a: "InkForge is great for teams, students, designers, educators, and anyone who wants to think and collaborate visually in real time."
   }
 ];
 
@@ -253,7 +253,7 @@ const faqs = [
           <div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight">FAQs</h1>
             <p className="mt-2 text-sm md:text-base text-white/70">
-              Get all your questions answered about Sketchcalibur.
+              Get all your questions answered about InkForge.
             </p>
           </div>
           <div className="flex items-center gap-3">
